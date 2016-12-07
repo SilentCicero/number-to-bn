@@ -15,7 +15,7 @@ module.exports = function numberToBN(arg) {
       if (isHexPrefixed(arg)) {
         return new BN(stripHexPrefix(arg), 16);
       } else if (arg.substr(0, 3) === '-0x') {
-        return new BN(`-${arg.slice(3)}`, 16);
+        return new BN('-' + String(arg.slice(3)), 16);
       } else { // eslint-disable-line
         return new BN(arg, 10);
       }
