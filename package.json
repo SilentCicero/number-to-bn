@@ -1,0 +1,45 @@
+{
+  "name": "number-to-bn",
+  "version": "1.0.0",
+  "description": "A simple method that will convert a string integer, hex, BN or bignumber.js object into a BN.js object.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha src/tests/**/**.js",
+    "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js",
+    "coveralls": "npm run test-travis && cat ./coverage/lcov.info | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/SilentCicero/number-to-bn.git"
+  },
+  "engines": {
+    "npm": ">=3",
+    "node": ">=6.5.0"
+  },
+  "keywords": [
+    "number",
+    "to",
+    "bn",
+    "convert",
+    "hex",
+    "bn.js"
+  ],
+  "author": "Nick Dodson <thenickdodson@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SilentCicero/number-to-bn/issues"
+  },
+  "homepage": "https://github.com/SilentCicero/number-to-bn#readme",
+  "dependencies": {
+    "bn.js": "4.11.6",
+    "is-hex-prefixed": "1.0.0",
+    "strip-hex-prefix": "1.0.0"
+  },
+  "devDependencies": {
+    "bignumber.js": "3.0.1",
+    "chai": "3.5.0",
+    "coveralls": "2.11.9",
+    "istanbul": "0.4.5",
+    "mocha": "3.2.0"
+  }
+}
