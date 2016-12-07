@@ -15,6 +15,10 @@ describe("numberToBN", () => {
       assert.deepEqual(numberToBN(new BigNumber(1000)).toNumber(10), 1000);
     });
 
+    it('should convert a negative 1.1 throws', () => {
+      assert.throws(() => numberToBN(1.1).toNumber(10), Error);
+    });
+
     it('should convert a negative BigNumber', () => {
       assert.deepEqual(numberToBN(new BigNumber(-1)).toNumber(10), -1);
     });

@@ -1,3 +1,7 @@
+# 1.2.0 -- decimal number fix
+
+1. now throws under decimal number
+
 # 1.1.0 -- es5 support
 
 1. es5 support

@@ -22,7 +22,7 @@ module.exports = function numberToBN(arg) {
     } else {
       throw errorMessage;
     }
-  } else if (typeof arg === 'number') {
+  } else if (typeof arg === 'number' && String(arg).match(/^-?[0-9]+$/)) {
     return new BN(String(arg));
   } else if (typeof arg === 'object'
     && arg.toString

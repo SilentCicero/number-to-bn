@@ -1,6 +1,6 @@
 {
   "name": "number-to-bn",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A simple method that will convert a string integer, hex, BN or bignumber.js object into a BN.js object.",
   "main": "src/index.js",
   "scripts": {
