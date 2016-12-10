@@ -1,5 +1,4 @@
 var BN = require('bn.js');
-var isHexPrefixed = require('is-hex-prefixed');
 var stripHexPrefix = require('strip-hex-prefix');
 
 /**
@@ -9,34 +8,24 @@ var stripHexPrefix = require('strip-hex-prefix');
  * @throws if the argument is not an array, object that isn't a bignumber, not a string number or number
  */
 module.exports = function numberToBN(arg) {
-  var errorMessage = new Error('[number-to-bn] while converting number to BN.js object, argument "' + String(arg) + '" type "' + String(typeof(arg)) + '" must be either a negative or positive (1) integer number, (2) string integer, (3) valid prefixed hex number string, (4) BN.js object instance or a (5) bignumber.js object.');
-  if (typeof arg === 'string') {
-    if (arg.match(/0[xX][0-9a-fA-F]+/) || arg.match(/^-?[0-9]+$/)) {
-      if (isHexPrefixed(arg)) {
-        return new BN(stripHexPrefix(arg), 16);
-      } else if (arg.substr(0, 3) === '-0x') {
-        return new BN('-' + String(arg.slice(3)), 16);
-      } else { // eslint-disable-line
-        return new BN(arg, 10);
-      }
-    } else {
-      throw errorMessage;
+  if (typeof arg === 'string' || typeof arg === 'number') {
+    var multiplier = new BN(1); // eslint-disable-line
+    var stringArg = stripHexPrefix(String(arg).toLowerCase().trim()); // eslint-disable-line
+    if (stringArg.substr(0, 1) === '-') {
+      stringArg = stripHexPrefix(stringArg.slice(1));
+      multiplier = new BN(-1);
     }
-  } else if (typeof arg === 'number' && String(arg).match(/^-?[0-9]+$/)) {
-    return new BN(String(arg));
-  } else if (typeof arg === 'object'
-    && arg.toString
-    && (!arg.pop && !arg.push)) {
-    if (arg.toString(10).match(/^-?[0-9]+$/)) {
-      if (arg.toArray && arg.toTwos) {
-        return arg;
-      } else {
-        return new BN(arg.toString(10));
-      }
-    } else {
-      throw errorMessage;
+
+    if (stringArg.match(/^[0-9][a-fA-F]+$/) || stringArg.match(/^[a-fA-F]+$/)) {
+      return new BN(stringArg, 16).mul(multiplier);
+    } else if (stringArg.match(/^-?[0-9]+$/) || stringArg === '') {
+      return new BN(stringArg, 10).mul(multiplier);
     }
-  } else {
-    throw errorMessage;
+  } else if (typeof arg === 'object' && arg.toString && (!arg.pop && !arg.push)) {
+    if (arg.toString(10).match(/^-?[0-9]+$/) && (arg.mul || arg.dividedToIntegerBy)) {
+      return new BN(arg.toString(10));
+    }
   }
+
+  throw new Error('[number-to-bn] while converting number ' + JSON.stringify(arg) + ' to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported.');
 }

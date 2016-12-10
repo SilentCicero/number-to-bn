@@ -10,150 +10,188 @@ describe("numberToBN", () => {
     });
   });
 
-  describe("should function normally", () => {
-    it('should convert BigNumber number to BN', () => {
-      assert.deepEqual(numberToBN(new BigNumber(1000)).toNumber(10), 1000);
-    });
+  const testCases = [
+    { value: 0.1, expected: '0', shouldThrow: true },
+    { value: '0.1', expected: '0', shouldThrow: true },
+    { value: '-0.1', expected: '0', shouldThrow: true },
+    { value: '.', expected: '0', shouldThrow: true },
+    { value: [], expected: '0', shouldThrow: true },
+    { value: undefined, expected: '0', shouldThrow: true },
+    { value: null, expected: '0', shouldThrow: true },
+    { value: {}, expected: '0', shouldThrow: true },
+    { value: true, expected: '0', shouldThrow: true },
+    { value: false, expected: '0', shouldThrow: true },
+    { value: 'Z', expected: '0', shouldThrow: true },
+    { value: 'z', expected: '0', shouldThrow: true },
+    { value: 'zZZ', expected: '0', shouldThrow: true },
+    { value: 'a.a', expected: '0', shouldThrow: true },
+    { value: 'aA.af', expected: '0', shouldThrow: true },
+    { value: '0xaA.af', expected: '0', shouldThrow: true },
+    { value: '-0xaA.af', expected: '0', shouldThrow: true },
+    { value: '-0xa.0a', expected: '0', shouldThrow: true },
+    { value: '-0X0A.0a', expected: '0', shouldThrow: true },
+    { value: "20938490284092380dfsjkZ", expected: '0', shouldThrow: true },
+    { value: ":", expected: '0', shouldThrow: true },
+    { value: "%", expected: '0', shouldThrow: true },
+    { value: new BigNumber('100.001'), expected: '0', shouldThrow: true },
+    { value: new BigNumber('-100.001'), expected: '0', shouldThrow: true },
+    { value: new BigNumber('1.20'), expected: '0', shouldThrow: true },
+    { value: 'Someone', expected: '0', shouldThrow: true },
+    { value: '100.002fsdfdss', expected: '0', shouldThrow: true },
+    { value: new Array(), expected: '-1', shouldThrow: true },
+    { value: '', expected: '0', shouldThrow: false },
+    { value: '-', expected: '0', shouldThrow: false },
+    { value: 0, expected: '0', shouldThrow: false },
+    { value: 1, expected: '1', shouldThrow: false },
+    { value: -0, expected: '0', shouldThrow: false },
+    { value: ' 0', expected: '0', shouldThrow: false },
+    { value: ' 1', expected: '1', shouldThrow: false },
+    { value: ' -0', expected: '0', shouldThrow: false },
+    { value: ' -1 ', expected: '-1', shouldThrow: false },
+    { value: ' 0 ', expected: '0', shouldThrow: false },
+    { value: ' 1 ', expected: '1', shouldThrow: false },
+    { value: ' -0 ', expected: '0', shouldThrow: false },
+    { value: ' -1 ', expected: '-1', shouldThrow: false },
+    { value: '0 ', expected: '0', shouldThrow: false },
+    { value: '1 ', expected: '1', shouldThrow: false },
+    { value: '-0 ', expected: '0', shouldThrow: false },
+    { value: '-1 ', expected: '-1', shouldThrow: false },
+    { value: '0', expected: '0', shouldThrow: false },
+    { value: '1', expected: '1', shouldThrow: false },
+    { value: '-0', expected: '0', shouldThrow: false },
+    { value: '-1', expected: '-1', shouldThrow: false },
+    { value: new BN(0), expected: '0', shouldThrow: false },
+    { value: new BN(1), expected: '1', shouldThrow: false },
+    { value: new BN(-1), expected: '-1', shouldThrow: false },
+    { value: new BN(-0), expected: '0', shouldThrow: false },
+    { value: new BigNumber(0), expected: '0', shouldThrow: false },
+    { value: new BigNumber(1), expected: '1', shouldThrow: false },
+    { value: new BigNumber('-1'), expected: '-1', shouldThrow: false },
+    { value: new BigNumber('-0'), expected: '0', shouldThrow: false },
+    { value: -92348723897, expected: '-92348723897', shouldThrow: false },
+    { value: 24387298347, expected: '24387298347', shouldThrow: false },
+    { value: 'a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0xa', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0x0a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: 'A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0xA', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0x0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: '0X0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0xa', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0x0a', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0xA', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0x0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0X0A', expected: new BN('a', 16).toString(10), shouldThrow: false },
+    { value: ' 0aF', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0xaf', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0x0AF', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0xAf', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0x0AF', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: ' 0X0Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: 'af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0xaf', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0x0af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: 'Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0xAf', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0x0Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: '0X0Af', expected: new BN('af', 16).toString(10), shouldThrow: false },
+    { value: new BigNumber('423879248942387943287923489724387987923'), expected: '423879248942387943287923489724387987923', shouldThrow: false },
+    { value: new BN('423879248942387943287923489724387987923'), expected: '423879248942387943287923489724387987923', shouldThrow: false },
+    { value: new BigNumber('24897234987'), expected: '24897234987', shouldThrow: false },
+    { value: new BN('24897234987'), expected: '24897234987', shouldThrow: false },
+    { value: new BigNumber('-423879248942387943287923489724387987923'), expected: '-423879248942387943287923489724387987923', shouldThrow: false },
+    { value: new BN('-423879248942387943287923489724387987923'), expected: '-423879248942387943287923489724387987923', shouldThrow: false },
+    { value: new BigNumber('-24897234987'), expected: '-24897234987', shouldThrow: false },
+    { value: new BN('-24897234987'), expected: '-24897234987', shouldThrow: false },
 
-    it('should convert a negative 1.1 throws', () => {
-      assert.throws(() => numberToBN(1.1).toNumber(10), Error);
-    });
+    // web3 tests
+    { value: 1, expected: '1' },
+    { value: '1', expected: '1' },
+    { value: '0x1', expected: '1'},
+    { value: '0x01', expected: '1'},
+    { value: 15, expected: '15'},
+    { value: '15', expected: '15'},
+    { value: '0xf', expected: '15'},
+    { value: '0x0f', expected: '15'},
+    { value: new BN('f', 16), expected: '15'},
+    { value: new BigNumber('f', 16), expected: '15'},
+    { value: -1, expected: '-1'},
+    { value: '-1', expected: '-1'},
+    { value: '-0x1', expected: '-1'},
+    { value: '-0x01', expected: '-1'},
+    { value: -15, expected: '-15'},
+    { value: '-15', expected: '-15'},
+    { value: '-0xf', expected: '-15'},
+    { value: '-0x0f', expected: '-15'},
+    { value: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: '0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: '-0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: '-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: 0, expected: '0'},
+    { value: '0', expected: '0'},
+    { value: '0x0', expected: '0'},
+    { value: -0, expected: '0'},
+    { value: '-0', expected: '0'},
+    { value: '-0x0', expected: '0'},
+    { value: new BN(0), expected: '0'},
+    { value: new BigNumber(0), expected: '0'},
 
-    it('should convert a negative BigNumber', () => {
-      assert.deepEqual(numberToBN(new BigNumber(-1)).toNumber(10), -1);
-    });
+    { value: new BN('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16), expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: new BN('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', 16), expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: new BN('-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16), expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: new BN('-fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', 16), expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
 
-    it('should convert a negative BigNumber string', () => {
-      assert.deepEqual(numberToBN(new BigNumber('-1')).toNumber(10), -1);
-    });
+    // BigNumber found to improperly handle large hex nums...
+    // { value: new BigNumber('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16), expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    // { value: new BigNumber('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', 16), expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    // { value: new BigNumber('-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16), expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    // { value: new BigNumber('-fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', 16), expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
 
-    it('should throw with decimal negative BigNumber', () => {
-      assert.throws(() => numberToBN(new BigNumber('-100.002')), Error);
-    });
+    { value: ' 87234987239872349872489724897248972348972389472498728723897234', expected: '87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: ' 0x87234987239872349872489724897248972348972389472498728723897234', expected: '87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: ' -0x87234987239872349872489724897248972348972389472498728723897234 ', expected: '-87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: ' 0xfffffffffFffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: ' 0xfffffffffffffffffffffffffffffffffffffffFfffffffffffffffffffffffD ', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: ' -0xfffffffffffffffffffFffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: ' -0xfffffffffffffffffffffffffffffffffffffffffffffffffFfffffffffffffd ', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: ' fffffffffFffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: ' fffffffffffffffffffffffffffffffffffffffFfffffffffffffffffffffffD ', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: ' -fffffffffffffffffffFffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: ' -fffffffffffffffffffffffffffffffffffffffffffffffffFfffffffffffffd ', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
 
-    it('should throw with decimal BigNumber', () => {
-      assert.throws(() => numberToBN(new BigNumber('100.002')), Error);
-    });
+    { value: '87234987239872349872489724897248972348972389472498728723897234', expected: '87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: '0x87234987239872349872489724897248972348972389472498728723897234', expected: '87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: '-0x87234987239872349872489724897248972348972389472498728723897234', expected: '-87234987239872349872489724897248972348972389472498728723897234', shouldThrow: false },
+    { value: '0xfffffffffFffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: '0xfffffffffffffffffffffffffffffffffffffffFfffffffffffffffffffffffD', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: '-0xfffffffffffffffffffFffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: '-0xfffffffffffffffffffffffffffffffffffffffffffffffffFfffffffffffffd', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: 'fffffffffFffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: 'fffffffffffffffffffffffffffffffffffffffFfffffffffffffffffffffffD', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+    { value: '-fffffffffffffffffffFffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
+    { value: '-fffffffffffffffffffffffffffffffffffffffffffffffffFfffffffffffffd', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
+  ];
 
-    it('should throw with with just decimal', () => {
-      assert.throws(() => numberToBN('.'), Error);
-    });
-
-    it('should throw with with decimal letters BigNumber', () => {
-      assert.throws(() => numberToBN('-100.0'), Error);
-    });
-
-    it('should throw with with decimal letters BigNumber', () => {
-      assert.throws(() => numberToBN('100.002fsdfdss'), Error);
-    });
-
-    it('should throw with with letters', () => {
-      assert.throws(() => numberToBN('fsdf11k'), Error);
-    });
-
-    it('should convert hexified number', () => {
-      assert.deepEqual(numberToBN('-0x0a').toString(10), (new BN('-0a')).toString(10));
-    });
-
-    it('should convert hexified number', () => {
-      assert.deepEqual(numberToBN('0xa').toString(10), (new BN('a')).toString(10));
-    });
-
-    it('should convert hexified number', () => {
-      assert.deepEqual(numberToBN('0x0a').toString(10), (new BN('0a')).toString(10));
-    });
-
-    it('should convert a negaitve int number', () => {
-      assert.deepEqual(numberToBN(-873248723498).toString(10), '-873248723498');
-    });
-
-    it('should convert a normal number', () => {
-      assert.deepEqual(numberToBN(423982347897).toString(10), '423982347897');
-    });
-
-    it('should convert non hexified string', () => {
-      assert.deepEqual(numberToBN('10').toString(10), (new BN('0a')).toString(10));
-    });
-
-    it('should convert zero number', () => {
-      assert.deepEqual(numberToBN(0).toString(10), '0');
-    });
-
-    it('should convert negative zero string BigNuber', () => {
-      assert.deepEqual(numberToBN(new BigNumber('-0')).toString(10), '0');
-    });
-
-    it('should convert zero string -1', () => {
-      assert.deepEqual(numberToBN(new BigNumber('-1')).toString(10), '-1');
-    });
-
-    it('should convert zero string', () => {
-      assert.deepEqual(numberToBN(new BigNumber('0')).toString(10), '0');
-    });
-
-    it('should convert normal long number BigNumber', () => {
-      assert.deepEqual(numberToBN(new BigNumber('423879248942387943287923489724387987923')).toString(10), '423879248942387943287923489724387987923');
-    });
-
-    it('should convert normal long number', () => {
-      assert.deepEqual(numberToBN('423879248942387943287923489724387987923').toString(10), '423879248942387943287923489724387987923');
-    });
-
-    it('should convert not a number new Array', () => {
-      assert.throws(() => numberToBN(new Array()), Error);
-    });
-
-    it('should convert not a number array', () => {
-      assert.throws(() => numberToBN([]), Error);
-    });
-
-    it('should convert not a number null', () => {
-      assert.throws(() => numberToBN(null), Error);
-    });
-
-    it('should throw convert not a number', () => {
-      assert.throws(() => numberToBN(undefined), Error);
-    });
-  });
-
-  describe('web3 tests', () => {
-    const tests = [
-      { value: 1, expected: '1' },
-      { value: '1', expected: '1' },
-      { value: '0x1', expected: '1'},
-      { value: '0x01', expected: '1'},
-      { value: 15, expected: '15'},
-      { value: '15', expected: '15'},
-      { value: '0xf', expected: '15'},
-      { value: '0x0f', expected: '15'},
-      { value: new BN('f', 16), expected: '15'},
-      { value: new BigNumber('f', 16), expected: '15'},
-      { value: -1, expected: '-1'},
-      { value: '-1', expected: '-1'},
-      { value: '-0x1', expected: '-1'},
-      { value: '-0x01', expected: '-1'},
-      { value: -15, expected: '-15'},
-      { value: '-15', expected: '-15'},
-      { value: '-0xf', expected: '-15'},
-      { value: '-0x0f', expected: '-15'},
-      { value: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935'},
-      { value: '0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933'},
-      { value: '-0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935'},
-      { value: '-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933'},
-      { value: 0, expected: '0'},
-      { value: '0', expected: '0'},
-      { value: '0x0', expected: '0'},
-      { value: -0, expected: '0'},
-      { value: '-0', expected: '0'},
-      { value: '-0x0', expected: '0'},
-      { value: new BN(0), expected: '0'},
-      { value: new BigNumber(0), expected: '0'}
-    ];
-
-    tests.forEach(function (test) {
-        it('should turn ' + test.value + ' to ' + test.expected, function () {
-            assert.equal(numberToBN(test.value).toString(10), test.expected);
-        });
-    });
+  testCases.forEach(function (test) {
+    if (test.shouldThrow === true) {
+      it('should turn ' + test.value + ' to throw Error.. ', function () {
+        assert.throws(() => numberToBN(test.value), Error);
+      });
+    } else {
+      it('should turn ' + test.value + ' to ' + test.expected, function () {
+        assert.equal(numberToBN(test.value).toString(10), test.expected);
+      });
+    }
   });
 });
