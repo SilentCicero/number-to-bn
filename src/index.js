@@ -16,9 +16,13 @@ module.exports = function numberToBN(arg) {
       multiplier = new BN(-1);
     }
 
-    if (stringArg.match(/^[0-9][a-fA-F]+$/) || stringArg.match(/^[a-fA-F]+$/)) {
+    if (!stringArg.match(/^-?[0-9]+$/) &&
+      stringArg.match(/^[0-9A-Fa-f]+$/)
+      || stringArg.match(/^[a-fA-F]+$/)) {
       return new BN(stringArg, 16).mul(multiplier);
-    } else if (stringArg.match(/^-?[0-9]+$/) || stringArg === '') {
+    }
+
+    if (stringArg.match(/^-?[0-9]+$/) || stringArg === '') {
       return new BN(stringArg, 10).mul(multiplier);
     }
   } else if (typeof arg === 'object' && arg.toString && (!arg.pop && !arg.push)) {

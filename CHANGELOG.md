@@ -1,3 +1,9 @@
+# 1.4.0 -- fix hex number
+
+1. Fix hex number shim
+2. More test cases added
+
+
 # 1.3.0 -- better everythign
 
 1. Better error messages
