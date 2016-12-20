@@ -1,6 +1,6 @@
 {
   "name": "number-to-bn",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A simple method that will convert numbers, hex, BN or bignumber.js object into a BN.js object.",
   "main": "src/index.js",
   "scripts": {
@@ -16,6 +16,8 @@
     "test:clean": "rimraf ./coverage",
     "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000",
     "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000",
+    "test:browser": "zuul -- ./src/tests/*.js",
+    "test:browser-local": "zuul --local -- ./src/tests/*.js",
     "coveralls": "npm run test-travis && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
@@ -44,12 +46,16 @@
     "bn.js": "4.11.6",
     "strip-hex-prefix": "1.0.0"
   },
+  "testling": {
+    "files": "src/tests/*.js"
+  },
   "devDependencies": {
     "bignumber.js": "3.0.1",
     "chai": "3.5.0",
     "coveralls": "2.11.9",
     "istanbul": "0.4.5",
     "mocha": "3.2.0",
+    "zuul": "3.0.0",
 
     "cross-env": "1.0.7",
     "pre-commit": "1.1.3",

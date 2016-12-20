@@ -1,8 +1,11 @@
+# 1.5.0 -- hex number fix
+
+1. Fixed hex number convetion, now if hex prefixed, always assumes base 16
+
 # 1.4.0 -- fix hex number
 
 1. Fix hex number shim
 2. More test cases added
-
 
 # 1.3.0 -- better everythign
 
