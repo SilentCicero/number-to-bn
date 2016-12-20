@@ -1,3 +1,7 @@
+# 1.7.0 -- remove console log
+
+1. Remove bad console log
+
 # 1.6.0 -- empty hex to zero
 
 1. Empty hex 0x -> 0
