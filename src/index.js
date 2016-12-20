@@ -19,6 +19,7 @@ module.exports = function numberToBN(arg) {
       stringArg = stripHexPrefix(stringArg.slice(1));
       multiplier = new BN(-1, 10);
     }
+    stringArg = stringArg === '' ? '0' : stringArg;
 
     if ((!stringArg.match(/^-?[0-9]+$/) && stringArg.match(/^[0-9A-Fa-f]+$/))
       || stringArg.match(/^[a-fA-F]+$/)

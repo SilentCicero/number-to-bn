@@ -1,3 +1,7 @@
+# 1.6.0 -- empty hex to zero
+
+1. Empty hex 0x -> 0
+
 # 1.5.0 -- hex number fix
 
 1. Fixed hex number convetion, now if hex prefixed, always assumes base 16

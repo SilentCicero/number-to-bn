@@ -33,6 +33,7 @@ describe("numberToBN", () => {
     { value: '0x10', expected: '16', shouldThrow: false },
     { value: '-0x10', expected: '-16', shouldThrow: false },
     { value: '0X10', expected: '16', shouldThrow: false },
+    { value: '0x', expected: '0', shouldThrow: false },
     { value: '0x10', expected: '16', shouldThrow: false },
     { value: '-0X10', expected: '-16', shouldThrow: false },
     { value: ' 0X10', expected: '16', shouldThrow: false },
