@@ -36,7 +36,7 @@
 
 <br />
 
-A simple method to convert integer or hex integer numbers to BN.js object instances. Does not supprot decimal numbers.
+A simple method to convert integer or hex integer numbers to BN.js object instances. Does not support decimal numbers.
 
 ## Install
 
